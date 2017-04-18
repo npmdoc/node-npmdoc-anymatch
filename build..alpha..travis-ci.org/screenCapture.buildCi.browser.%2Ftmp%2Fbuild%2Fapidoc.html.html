@@ -1,0 +1,204 @@
+<html><head></head><body><div class="apidocDiv">
+<style>
+/*csslint
+*/
+.apidocDiv {
+    background: #fff;
+    font-family: Arial, Helvetica, sans-serif;
+}
+.apidocDiv a[href] {
+    color: #33f;
+    font-weight: bold;
+    text-decoration: none;
+}
+.apidocDiv a[href]:hover {
+    text-decoration: underline;
+}
+.apidocCodeCommentSpan {
+    background: #bbf;
+    color: #000;
+    display: block;
+}
+.apidocCodeKeywordSpan {
+    color: #d00;
+    font-weight: bold;
+}
+.apidocCodePre {
+    background: #eef;
+    border: 1px solid;
+    color: #777;
+    padding: 5px;
+    white-space: pre-wrap;
+}
+.apidocFooterDiv {
+    margin-top: 20px;
+    text-align: center;
+}
+.apidocModuleLi {
+    margin-top: 10px;
+}
+.apidocSectionDiv {
+    border-top: 1px solid;
+    margin-top: 20px;
+}
+.apidocSignatureSpan {
+    color: #777;
+    font-weight: bold;
+}
+</style>
+<h1>api documentation for
+    <a href="https://github.com/es128/anymatch">anymatch (v1.3.0)</a>
+</h1>
+<h4>Matches strings against configurable strings, globs, regular expressions, and/or functions</h4>
+<div class="apidocSectionDiv"><a href="#apidoc.tableOfContents" id="apidoc.tableOfContents"><h1>table of contents</h1></a><ol>
+
+    <li class="apidocModuleLi"><a href="#apidoc.module.anymatch">module anymatch</a><ol>
+
+        <li>
+
+            <a class="apidocElementLiA" href="#apidoc.element.anymatch.anymatch">
+            function <span class="apidocSignatureSpan"></span>anymatch
+            <span class="apidocSignatureSpan">(criteria, value, returnIndex, startIndex, endIndex)</span>
+            </a>
+
+        </li>
+
+        <li>
+
+            <a class="apidocElementLiA" href="#apidoc.element.anymatch.toString">
+            function <span class="apidocSignatureSpan">anymatch.</span>toString
+            <span class="apidocSignatureSpan">()</span>
+            </a>
+
+        </li>
+
+    </ol></li>
+
+    <li class="apidocModuleLi"><a href="#apidoc.module.anymatch.toString">module anymatch.toString</a><ol>
+
+        <li>
+
+            <a class="apidocElementLiA" href="#apidoc.element.anymatch.toString.toString">
+            function <span class="apidocSignatureSpan">anymatch.</span>toString
+            <span class="apidocSignatureSpan">()</span>
+            </a>
+
+        </li>
+
+    </ol></li>
+
+</ol></div>
+
+<div class="apidocSectionDiv">
+<h1><a href="#apidoc.module.anymatch" id="apidoc.module.anymatch">module anymatch</a></h1>
+
+
+    <h2>
+        <a href="#apidoc.element.anymatch.anymatch" id="apidoc.element.anymatch.anymatch">
+        function <span class="apidocSignatureSpan"></span>anymatch
+        <span class="apidocSignatureSpan">(criteria, value, returnIndex, startIndex, endIndex)</span>
+        </a>
+    </h2>
+    <ul>
+    <li>description and source-code<pre class="apidocCodePre">anymatch = function (criteria, value, returnIndex, startIndex, endIndex) {
+  criteria = arrify(criteria);
+  value = arrify(value);
+  if (arguments.length === 1) {
+    return anymatch.bind(null, criteria.map(function(criterion) {
+      return typeof criterion === 'string' &amp;&amp; criterion[0] !== '!' ?
+        micromatch.matcher(criterion) : criterion;
+    }));
+  }
+  startIndex = startIndex || 0;
+  var string = value[0];
+  var altString;
+  var matched = false;
+  var matchIndex = -1;
+  function testCriteria (criterion, index) {
+    var result;
+    switch (toString.call(criterion)) {
+    case '[object String]':
+      result = string === criterion || altString &amp;&amp; altString === criterion;
+      result = result || micromatch.isMatch(string, criterion);
+      break;
+    case '[object RegExp]':
+      result = criterion.test(string) || altString &amp;&amp; criterion.test(altString);
+      break;
+    case '[object Function]':
+      result = criterion.apply(null, value);
+      break;
+    default:
+      result = false;
+    }
+    if (result) {
+      matchIndex = index + startIndex;
+    }
+    return result;
+  }
+  var crit = criteria;
+  var negGlobs = crit.reduce(function(arr, criterion, index) {
+    if (typeof criterion === 'string' &amp;&amp; criterion[0] === '!') {
+      if (crit === criteria) {
+        // make a copy before modifying
+        crit = crit.slice();
+      }
+      crit[index] = null;
+      arr.push(criterion.substr(1));
+    }
+    return arr;
+  }, []);
+  if (!negGlobs.length || !micromatch.any(string, negGlobs)) {
+    if (path.sep === '\\' &amp;&amp; typeof string === 'string') {
+      altString = string.split('\\').join('/');
+      altString = altString === string ? null : altString;
+    }
+    matched = crit.slice(startIndex, endIndex).some(testCriteria);
+  }
+  return returnIndex === true ? matchIndex : matched;
+}</pre></li>
+    <li>example usage<pre class="apidocCodePre">n/a</pre></li>
+    </ul>
+
+
+
+    <h2>
+        <a href="#apidoc.element.anymatch.toString" id="apidoc.element.anymatch.toString">
+        function <span class="apidocSignatureSpan">anymatch.</span>toString
+        <span class="apidocSignatureSpan">()</span>
+        </a>
+    </h2>
+    <ul>
+    <li>description and source-code<pre class="apidocCodePre">toString = function () {
+    return text;
+}</pre></li>
+    <li>example usage<pre class="apidocCodePre">n/a</pre></li>
+    </ul>
+
+
+</div>
+
+<div class="apidocSectionDiv">
+<h1><a href="#apidoc.module.anymatch.toString" id="apidoc.module.anymatch.toString">module anymatch.toString</a></h1>
+
+
+    <h2>
+        <a href="#apidoc.element.anymatch.toString.toString" id="apidoc.element.anymatch.toString.toString">
+        function <span class="apidocSignatureSpan">anymatch.</span>toString
+        <span class="apidocSignatureSpan">()</span>
+        </a>
+    </h2>
+    <ul>
+    <li>description and source-code<pre class="apidocCodePre">function toString() { [native code] }</pre></li>
+    <li>example usage<pre class="apidocCodePre">n/a</pre></li>
+    </ul>
+
+
+</div>
+
+<div class="apidocFooterDiv">
+    [ this document was created with
+    <a href="https://github.com/kaizhu256/node-utility2" target="_blank">utility2</a>
+    ]
+</div>
+</div>
+</body></html>
